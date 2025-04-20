@@ -11,3 +11,4 @@ def remove_directory(directory_toberemoved):
         print(Fore.RED + f"Directory '{directory_toberemoved}' does not exist.")
     except Exception as e:
         print(Fore.RED + f"Error removing directory: {e}")
+# Disabled, for now

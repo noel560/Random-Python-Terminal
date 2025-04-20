@@ -13,9 +13,13 @@ import etc.open_directory
 import etc.run_file
 import etc.touch
 import etc.cat
+import etc.remove_file
+import etc.whereis
+import etc.zip_file
+import etc.unzip_file
 
 #Sudo imports
-import etc.sudo.s_remove_directory as sudo_remove_directory
+#import etc.sudo.s_remove_directory as sudo_remove_directory
 
 init(autoreset=True)
 
@@ -54,18 +58,18 @@ def main():
         user_input = input(Fore.LIGHTGREEN_EX + f"{username}@{pc_name}" + Fore.WHITE + ":" + Fore.LIGHTBLUE_EX + current_directory + Fore.WHITE + "$ ")
 
         # SUDO Input handling
-        match user_input.startswith("sudo"):
-            case True:
-                match user_input[5:]: # Check if the input starts with "sudo"
-                    case "rmdir": # sudo rmdir command
-                        directory_toberemoved = user_input[11:]
-                        sudo_remove_directory.remove_directory(directory_toberemoved)
-
-                    case _:
-                        print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
-                continue # If sudo command is executed, continue to the next iteration
-            case False: # If not a sudo command, continue with normal input handling
-                pass
+        #match user_input.startswith("sudo"):
+        #    case True:
+        #        match user_input[5:]: # Check if the input starts with "sudo"
+        #            case "rmdir": # sudo rmdir command
+        #                directory_toberemoved = user_input[11:]
+        #                sudo_remove_directory.remove_directory(directory_toberemoved)
+        #
+        #            case _:
+        #                print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
+        #        continue # If sudo command is executed, continue to the next iteration
+        #    case False: # If not a sudo command, continue with normal input handling
+        #        pass
 
         # Normal Input handling
         match user_input:
@@ -119,12 +123,55 @@ def main():
             case str() if user_input.startswith("cat "): # cat command
                 filename = user_input[4:]
                 etc.cat.cat(filename)
+
+            case str() if user_input.startswith("rm "): # remove file command
+                filename = user_input[3:]
+                etc.remove_file.remove_file(filename)
+
+            case str() if user_input.startswith("whereis "): # whereis command
+                filename = user_input[8:]
+                etc.whereis.whereis(filename)
+            case str() if user_input.startswith("zip"): # zip command
+                path = user_input[4:]
+                etc.zip_file.zip_path(path)
+            case str() if user_input.startswith("unzip"): # unzip command
+                zip_path = user_input[6:]
+                etc.unzip_file.unzip_path(zip_path)
             
+            # Help for specific commands -------------------------------------------
             case "cat":
                 print(Fore.RED + "See the content of a file\nUsage: cat <filename>")
             
             case "touch":
-                print(Fore.RED + "It makes a file you want\nUsage: touch <filename>")
+                print(Fore.RED + "Make any file\nUsage: touch <filename>")
+
+            case "rm":
+                print(Fore.RED + "Remove any file\nUsage: rm <filename>")
+
+            case "echo":
+                print(Fore.RED + "Echo any text\nUsage: echo <text>")
+            
+            case "cd":
+                print(Fore.RED + "Change directory\nUsage: cd <directory>")
+
+            case "opendir ":
+                print(Fore.RED + "Open a directory\nUsage: opendir <directory>")
+
+            case "rmdir":
+                print(Fore.RED + "Remove a directory\nUsage: rmdir <directory>")
+
+            case "mkdir":
+                print(Fore.RED + "Make a directory\nUsage: mkdir <directory>")
+
+            case "whereis":
+                print(Fore.RED + "Find a file\nUsage: whereis <filename>")
+
+            case "zip":
+                print(Fore.RED + "Compress a file or directory\nUsage: zip <path>")
+
+            case "unzip":
+                print(Fore.RED + "Uncompress a zip file\nUsage: unzip <path>")
+            #----------------------------------------------------------------------
 
             case _: # unknown command
                 print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
