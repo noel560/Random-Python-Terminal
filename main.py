@@ -3,9 +3,19 @@ import sys
 from colorama import Fore, init
 import shutil
 
+# Local imports
 import etc.help
 import etc.list_directory
 import etc.change_directory
+import etc.make_directory
+import etc.remove_directory
+import etc.open_directory
+import etc.run_file
+import etc.touch
+import etc.cat
+
+#Sudo imports
+import etc.sudo.s_remove_directory as sudo_remove_directory
 
 init(autoreset=True)
 
@@ -37,33 +47,24 @@ def main():
     username = os.getlogin() # Get the current username
     pc_name = os.uname().nodename if hasattr(os, 'uname') else os.environ.get('COMPUTERNAME', 'PC') # Get the PC name
 
+    os.chdir(os.path.expanduser("~")) # Change directory to the user's home directory
+
     while True:
         current_directory = os.getcwd() # Get the current directory
         user_input = input(Fore.LIGHTGREEN_EX + f"{username}@{pc_name}" + Fore.WHITE + ":" + Fore.LIGHTBLUE_EX + current_directory + Fore.WHITE + "$ ")
 
         # SUDO Input handling
         match user_input.startswith("sudo"):
-
             case True:
-
-                match user_input[5:]:
-
+                match user_input[5:]: # Check if the input starts with "sudo"
                     case "rmdir": # sudo rmdir command
-
                         directory_toberemoved = user_input[11:]
-                        try:
-                            shutil.rmtree(directory_toberemoved)
-                            print(Fore.LIGHTGREEN_EX + f"Directory '{directory_toberemoved}' removed successfully.")
-                        except FileNotFoundError:
-                            print(Fore.RED + f"Directory '{directory_toberemoved}' does not exist.")
-                        except Exception as e:
-                            print(Fore.RED + f"Error removing directory: {e}")
+                        sudo_remove_directory.remove_directory(directory_toberemoved)
 
                     case _:
                         print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
-                continue
-
-            case False:
+                continue # If sudo command is executed, continue to the next iteration
+            case False: # If not a sudo command, continue with normal input handling
                 pass
 
         # Normal Input handling
@@ -94,36 +95,36 @@ def main():
 
             case str() if user_input.startswith("mkdir "): # make directory command
                 directory_tobemade = user_input[6:]
-                try:
-                    os.mkdir(directory_tobemade)
-                    print(Fore.LIGHTGREEN_EX + f"Directory '{directory_tobemade}' created successfully.")
-                except FileExistsError:
-                    print(Fore.RED + f"Directory '{directory_tobemade}' already exists.")
-                except Exception as e:
-                    print(Fore.RED + f"Error creating directory: {e}")
+                etc.make_directory.make_directory(directory_tobemade)
 
             case str() if user_input.startswith("rmdir "): # remove directory command
                 directory_toberemoved = user_input[6:]
-                try:
-                    os.rmdir(directory_toberemoved)
-                    print(Fore.LIGHTGREEN_EX + f"Directory '{directory_toberemoved}' removed successfully.")
-                except FileNotFoundError:
-                    print(Fore.RED + f"Directory '{directory_toberemoved}' does not exist.")
-                except OSError:
-                    print(Fore.RED + f"Directory '{directory_toberemoved}' is not empty.")
-                except Exception as e:
-                    print(Fore.RED + f"Error removing directory: {e}")
+                etc.remove_directory.remove_directory(directory_toberemoved)
             
             case str() if user_input.startswith("opendir "): # open directory command
                 directory_to_open = user_input[8:]
-                try:
-                    if os.path.isdir(directory_to_open):
-                        os.startfile(directory_to_open) if os.name == 'nt' else os.system(f'xdg-open "{directory_to_open}"')
-                        print(Fore.LIGHTGREEN_EX + f"Opened directory '{directory_to_open}'.")
-                    else:
-                        print(Fore.RED + f"'{directory_to_open}' is not a valid directory.")
-                except Exception as e:
-                    print(Fore.RED + f"Error opening directory: {e}")
+                etc.open_directory.open_directory(directory_to_open)
+
+            case "opendir": # open current directory command
+                etc.open_directory.open_current_directory()
+
+            case str() if user_input.startswith("run "): # run command
+                command_to_run = user_input[4:]
+                etc.run_file.run(command_to_run)
+
+            case str() if user_input.startswith("touch "): # touch command
+                filename = user_input[6:]
+                etc.touch.touch(filename)
+
+            case str() if user_input.startswith("cat "): # cat command
+                filename = user_input[4:]
+                etc.cat.cat(filename)
+            
+            case "cat":
+                print(Fore.RED + "See the content of a file\nUsage: cat <filename>")
+            
+            case "touch":
+                print(Fore.RED + "It makes a file you want\nUsage: touch <filename>")
 
             case _: # unknown command
                 print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
