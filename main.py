@@ -111,6 +111,27 @@ def execute(input):
         case str() if input.startswith("unzip"): # Unzip command
             zip_path = input[6:]
             commands.unzip(zip_path)
+
+        case "uptime": # Uptime command
+            pass
+
+        case "whoami": # Whoami command
+            pass
+
+        case "tree": # Tree command
+            pass
+
+        case str() if input.startswith("stat"): # Stat command
+            pass
+
+        case str() if input.startswith("mv"): # Move command
+            pass
+
+        case str() if input.startswith("cp"): # Copy command
+            pass
+
+        case str() if input.startswith("rename"): # Rename command
+            pass
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
