@@ -1,0 +1,189 @@
+from colorama import init, Fore
+import os
+import zipfile
+
+init(autoreset=True)
+
+# Help commands | commands.show_help() | Shows the list of commands
+def show_help():
+    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip"
+    commands=commands.replace(" ","\n")
+    print(commands)
+
+# Cat command | commands.cat(filename) | Reads the contents of a file
+def cat(filename):
+    try:
+        with open(filename, 'r') as file:
+            contents = file.read()
+        print(Fore.LIGHTGREEN_EX + f"Contents of {filename}:" + Fore.WHITE + f"\n{contents}")
+    except Exception as e:
+        print(Fore.RED + f"Error while reading file: {e}")
+
+# Change directory (cd) command | commands.change_directory(directory) | Changes the current working directory
+def change_directory(directory):
+    try:
+        os.chdir(directory)
+        print(Fore.LIGHTGREEN_EX + f"Changed directory to: {os.getcwd()}")
+    except Exception as e:
+        print(Fore.RED + f"Error while changing directory: {e}")
+
+# List directory (ls) command | commands.list_directory() | Lists the contents of the current directory
+def list_directory():
+    try:
+        contents = os.listdir(os.getcwd())
+        if contents:
+            for item in contents:
+                if os.path.isdir(item):
+                    print(Fore.LIGHTGREEN_EX + f"{item}/")  # Mappa
+                else:
+                    print(f"{item}")  # Fájl
+        else:
+            print("The directory is empty.")
+    except Exception as e:
+        print(Fore.RED + f"Error while listing contents: {e}")
+
+# Make directory (mkdir) command | commands.make_directory(directory) | Creates a new directory
+def make_directory(directory):
+    try:
+        os.mkdir(directory)
+        print(Fore.LIGHTGREEN_EX + f"Directory '{directory}' created successfully.")
+    except FileExistsError:
+        print(Fore.RED + f"Directory '{directory}' already exists.")
+    except Exception as e:
+        print(Fore.RED + f"Error creating directory: {e}")
+
+# Remove directory (rmdir) command | commands.remove_directory(directory) | Removes a specified directory
+def remove_directory(directory):
+    try:
+        os.rmdir(directory)
+        print(Fore.LIGHTGREEN_EX + f"Directory '{directory}' removed successfully.")
+    except FileNotFoundError:
+        print(Fore.RED + f"Directory '{directory}' does not exist.")
+    except OSError:
+        print(Fore.RED + f"Directory '{directory}' is not empty.")
+    except Exception as e:
+        print(Fore.RED + f"Error removing directory: {e}")
+
+# Open current directory (opendir) command | commands.open_current_directory() | Opens the current directory in the file explorer
+def open_current_directory():
+    try:
+        os.startfile(os.getcwd()) if os.name == 'nt' else os.system(f'xdg-open "{os.getcwd()}"')
+        print(Fore.LIGHTGREEN_EX + f"Opened current directory '{os.getcwd()}'.")
+    except Exception as e:
+            print(Fore.RED + f"Error opening current directory: {e}")
+
+# Open directory (opendir) command | commands.open_directory(directory) | Opens a specified directory in the file explorer
+def open_directory(directory):
+    try:
+        if os.path.isdir(directory):
+            os.startfile(directory) if os.name == 'nt' else os.system(f'xdg-open "{directory}"')
+            print(Fore.LIGHTGREEN_EX + f"Opened directory '{directory}'.")
+        else:
+            print(Fore.RED + f"'{directory}' is not a valid directory.")
+    except Exception as e:
+        print(Fore.RED + f"Error opening directory: {e}")
+
+# Remove file (rm) command | commands.remove_file(filename) | Removes a specified file
+def remove_file(filename):
+    if os.path.isfile(filename):
+        os.remove(filename)
+        print(Fore.LIGHTGREEN_EX + f"File '{filename}' removed successfully.")
+    else:
+        print(Fore.RED + f"File '{filename}' not found.")
+
+# Touch command | commands.touch(filename) | Creates a new file
+def touch(filename):
+    try:
+        with open(filename, 'w') as file:
+            file.write("")
+        print(Fore.LIGHTGREEN_EX + f"File created: {filename}")
+    except Exception as e:
+        print(Fore.RED + f"Error while creating file: {e}")
+
+# Run command | commands.run(command_to_run) | Executes a specified command in the shell
+def run(command_to_run):
+    try:
+        os.system(command_to_run)
+    except Exception as e:
+        print(Fore.RED + f"Error running command: {e}")
+
+# Get drives for whereis command
+def get_drives():
+    return [f"{chr(drive)}:\\" for drive in range(65, 91) if os.path.exists(f"{chr(drive)}:\\")]
+# Whereis command | commands.whereis(filename) | Searches for a file in all drives
+def whereis(filename):
+    drives = get_drives()
+    for drive in drives:
+        for root, dirs, files in os.walk(drive):  # Az összes meghajtót végigjárja
+            if filename in files:
+                print(Fore.GREEN + f"Found: {os.path.join(root, filename)}")
+                return
+    print(Fore.RED + "File not found.")
+
+# Zip command | commands.zip(path) | Compresses a file or directory into a zip file
+def zip(path):
+    # Check if the path exists
+    if not os.path.exists(path):
+        print(Fore.RED + f"Error: Path '{path}' not found.")
+        return
+
+    # Check if the path is already a zip file
+    if path.endswith('.zip'):
+        print(Fore.RED + f"Error: Path '{path}' is already a zip file.")
+        return
+
+    # Define the zip file name
+    zip_filename = f"{path}.zip"
+
+    try:
+        with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            if os.path.isfile(path):
+                # If it's a file, add it to the zip archive
+                zipf.write(path, os.path.basename(path))
+            elif os.path.isdir(path):
+                # If it's a folder, add all its contents
+                for root, dirs, files in os.walk(path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        arcname = os.path.relpath(file_path, start=path)
+                        zipf.write(file_path, arcname)
+    except Exception as e:
+        print(Fore.RED + f"Error: Failed to compress '{path}'. Reason: {e}")
+        return
+
+    # Verify if the zip file was created successfully
+    if os.path.isfile(zip_filename):
+        print(Fore.LIGHTGREEN_EX + f"Success: '{path}' has been compressed to '{zip_filename}'.")
+        return
+    else:
+        print(Fore.RED + f"Error: Failed to create zip file '{zip_filename}'.")
+        return
+
+# Unzip command | commands.unzip(zip_path) | Extracts a zip file to a specified directory
+def unzip(zip_path):
+    # Check if the zip file exists
+    if not os.path.exists(zip_path):
+        print(Fore.RED + f"Error: File '{zip_path}' not found.")
+        return
+
+    # Check if the file is a zip file
+    if not zip_path.endswith('.zip'):
+        print(Fore.RED + f"Error: File '{zip_path}' is not a zip file.")
+        return
+
+    # Define the extraction directory
+    extract_dir = os.path.splitext(zip_path)[0]
+
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zipf:
+            # Extract all contents to the extraction directory
+            zipf.extractall(extract_dir)
+    except Exception as e:
+        print(Fore.RED + f"Error: Failed to extract '{zip_path}'. Reason: {e}")
+        return
+
+    # Verify if the extraction was successful
+    if os.path.isdir(extract_dir):
+        print(Fore.LIGHTGREEN_EX + f"Success: '{zip_path}' has been extracted to '{extract_dir}'.")
+    else:
+        print(Fore.RED + f"Error: Failed to extract contents of '{zip_path}'.")

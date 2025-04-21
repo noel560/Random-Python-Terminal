@@ -1,34 +1,124 @@
 import os
 import sys
 from colorama import Fore, init
-import shutil
 
-# Local imports
-import etc.help
-import etc.list_directory
-import etc.change_directory
-import etc.make_directory
-import etc.remove_directory
-import etc.open_directory
-import etc.run_file
-import etc.touch
-import etc.cat
-import etc.remove_file
-import etc.whereis
-import etc.zip_file
-import etc.unzip_file
+import commands
 
-#Sudo imports
-#import etc.sudo.s_remove_directory as sudo_remove_directory
-
+# Initialize colorama
 init(autoreset=True)
 
-#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#
-#                               Side Functions                                #
-#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#
+# Main execution function for commands
+def execute(input):
+    match input:
+        # Help for specific commands -------------------------------------------
+        case "cat": # Cat command
+            print(Fore.RED + "See the content of a file\nUsage: cat <filename>")
+            
+        case "touch": # Touch command
+            print(Fore.RED + "Make any file\nUsage: touch <filename>")
 
+        case "rm": # Remove file command
+            print(Fore.RED + "Remove any file\nUsage: rm <filename>")
+
+        case "echo": # Echo command
+            print(Fore.RED + "Echo any text\nUsage: echo <text>")
+            
+        case "cd": # Change directory command
+            print(Fore.RED + "Change directory\nUsage: cd <directory>")
+
+        case "opendir ": # Open directory command
+            print(Fore.RED + "Open a directory\nUsage: opendir <directory>")
+
+        case "rmdir": # Remove directory command
+            print(Fore.RED + "Remove a directory\nUsage: rmdir <directory>")
+
+        case "mkdir": # Make directory command
+            print(Fore.RED + "Make a directory\nUsage: mkdir <directory>")
+
+        case "whereis": # Whereis command
+            print(Fore.RED + "Find a file\nUsage: whereis <filename>")
+
+        case "zip": # Zip command
+            print(Fore.RED + "Compress a file or directory\nUsage: zip <path>")
+
+        case "unzip": # Unzip command
+            print(Fore.RED + "Uncompress a zip file\nUsage: unzip <path>")
+
+        case "run": # Run command
+            print(Fore.RED + "Run any shell command\nUsage: run <command>")
+        #----------------------------------------------------------------------
+
+        # Input handling for commands
+        case "help": # Help command
+            commands.show_help()
+        
+        case "clear" | "cls": # Clear command
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        case str() if input.startswith("echo"): # Echo command
+            echo_text = input[5:]
+            print(echo_text)
+        
+        case "reset": # Reset terminal command
+            display_welcome()
+
+        case "ls" | "dir": # List directory command
+            commands.list_directory()
+
+        case str() if input.startswith("cd"): # Change directory command
+            directory = input[3:]
+            commands.change_directory(directory)
+
+        case str() if input.startswith("mkdir"): # Make directory command
+            directory = input[6:]
+            commands.make_directory(directory)
+
+        case str() if input.startswith("rmdir"): # Remove directory command
+            directory = input[6:]
+            commands.remove_directory(directory)
+
+        case str() if input.startswith("opendir"): # Open directory command
+            directory = input[8:]
+            commands.open_directory(directory)
+
+        case "opendir": # Open current directory command
+            commands.open_current_directory()
+
+        case str() if input.startswith("run"): # Run command
+            command_to_run = input[4:]
+            commands.run(command_to_run)
+
+        case str() if input.startswith("touch"): # Touch command
+            filename = input[6:]
+            commands.touch(filename)
+
+        case str() if input.startswith("cat"): # Cat command
+            filename = input[4:]
+            commands.cat(filename)
+
+        case str() if input.startswith("rm"): # Remove file command
+            filename = input[3:]
+            commands.remove_file(filename)
+
+        case str() if input.startswith("whereis"): # Whereis command
+            filename = input[8:]
+            commands.whereis(filename)
+
+        case str() if input.startswith("zip"): # Zip command
+            path = input[4:]
+            commands.zip(path)
+
+        case str() if input.startswith("unzip"): # Unzip command
+            zip_path = input[6:]
+            commands.unzip(zip_path)
+        
+        case _:
+            print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
+
+# Function to display the welcome message
 def display_welcome():
     os.system('cls' if os.name == 'nt' else 'clear')
+    os.chdir(os.path.expanduser("~")) # Change directory to the user's home directory
     print(
     """
                 _..----.._    _
@@ -41,14 +131,11 @@ def display_welcome():
     print("Type 'help' to see the list of commands.")
     print("")
 
-#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#
-#                                    Main                                     #
-#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#=#---\\---//---#
-
+# Main function to handle user input and command execution
 def main():
     display_welcome()
 
-    username = os.getlogin() # Get the current username
+    username = os.getlogin() # Get the current user's name
     pc_name = os.uname().nodename if hasattr(os, 'uname') else os.environ.get('COMPUTERNAME', 'PC') # Get the PC name
 
     os.chdir(os.path.expanduser("~")) # Change directory to the user's home directory
@@ -57,124 +144,14 @@ def main():
         current_directory = os.getcwd() # Get the current directory
         user_input = input(Fore.LIGHTGREEN_EX + f"{username}@{pc_name}" + Fore.WHITE + ":" + Fore.LIGHTBLUE_EX + current_directory + Fore.WHITE + "$ ")
 
-        # SUDO Input handling
-        #match user_input.startswith("sudo"):
-        #    case True:
-        #        match user_input[5:]: # Check if the input starts with "sudo"
-        #            case "rmdir": # sudo rmdir command
-        #                directory_toberemoved = user_input[11:]
-        #                sudo_remove_directory.remove_directory(directory_toberemoved)
-        #
-        #            case _:
-        #                print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
-        #        continue # If sudo command is executed, continue to the next iteration
-        #    case False: # If not a sudo command, continue with normal input handling
-        #        pass
-
-        # Normal Input handling
-        match user_input:
-
-            case "help": # help command
-                etc.help.show_help()
-
-            case "exit": # exit command
-                sys.exit()
-
-            case "clear" | "cls": # clear command
-                os.system('cls' if os.name == 'nt' else 'clear')
-
-            case str() if user_input.startswith("echo"): # echo command
-                echo_text = user_input[5:]
-                print(echo_text)
-
-            case "reset": # reset terminal command
-                display_welcome()
-
-            case "ls" | "dir": # list files command
-                etc.list_directory.dir()
-
-            case str() if user_input.startswith("cd"): # change directory command
-                directory = user_input[3:]
-                etc.change_directory.change_directory(directory)
-
-            case str() if user_input.startswith("mkdir "): # make directory command
-                directory_tobemade = user_input[6:]
-                etc.make_directory.make_directory(directory_tobemade)
-
-            case str() if user_input.startswith("rmdir "): # remove directory command
-                directory_toberemoved = user_input[6:]
-                etc.remove_directory.remove_directory(directory_toberemoved)
-            
-            case str() if user_input.startswith("opendir "): # open directory command
-                directory_to_open = user_input[8:]
-                etc.open_directory.open_directory(directory_to_open)
-
-            case "opendir": # open current directory command
-                etc.open_directory.open_current_directory()
-
-            case str() if user_input.startswith("run "): # run command
-                command_to_run = user_input[4:]
-                etc.run_file.run(command_to_run)
-
-            case str() if user_input.startswith("touch "): # touch command
-                filename = user_input[6:]
-                etc.touch.touch(filename)
-
-            case str() if user_input.startswith("cat "): # cat command
-                filename = user_input[4:]
-                etc.cat.cat(filename)
-
-            case str() if user_input.startswith("rm "): # remove file command
-                filename = user_input[3:]
-                etc.remove_file.remove_file(filename)
-
-            case str() if user_input.startswith("whereis "): # whereis command
-                filename = user_input[8:]
-                etc.whereis.whereis(filename)
-            case str() if user_input.startswith("zip"): # zip command
-                path = user_input[4:]
-                etc.zip_file.zip_path(path)
-            case str() if user_input.startswith("unzip"): # unzip command
-                zip_path = user_input[6:]
-                etc.unzip_file.unzip_path(zip_path)
-            
-            # Help for specific commands -------------------------------------------
-            case "cat":
-                print(Fore.RED + "See the content of a file\nUsage: cat <filename>")
-            
-            case "touch":
-                print(Fore.RED + "Make any file\nUsage: touch <filename>")
-
-            case "rm":
-                print(Fore.RED + "Remove any file\nUsage: rm <filename>")
-
-            case "echo":
-                print(Fore.RED + "Echo any text\nUsage: echo <text>")
-            
-            case "cd":
-                print(Fore.RED + "Change directory\nUsage: cd <directory>")
-
-            case "opendir ":
-                print(Fore.RED + "Open a directory\nUsage: opendir <directory>")
-
-            case "rmdir":
-                print(Fore.RED + "Remove a directory\nUsage: rmdir <directory>")
-
-            case "mkdir":
-                print(Fore.RED + "Make a directory\nUsage: mkdir <directory>")
-
-            case "whereis":
-                print(Fore.RED + "Find a file\nUsage: whereis <filename>")
-
-            case "zip":
-                print(Fore.RED + "Compress a file or directory\nUsage: zip <path>")
-
-            case "unzip":
-                print(Fore.RED + "Uncompress a zip file\nUsage: unzip <path>")
-            #----------------------------------------------------------------------
-
-            case _: # unknown command
-                print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
+        if user_input == "exit":
+            sys.exit(0)
+        else:
+            try:
+                execute(user_input)
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
+                continue
 
 if __name__ == "__main__":
     main()
