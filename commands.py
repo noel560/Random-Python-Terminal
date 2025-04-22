@@ -1,12 +1,13 @@
 from colorama import init, Fore
 import os
 import zipfile
+from datetime import datetime
 
 init(autoreset=True)
 
 # Help commands | commands.show_help() | Shows the list of commands
 def show_help():
-    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip"
+    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip uptime whoami tree stat mv cp rename"
     commands=commands.replace(" ","\n")
     print(commands)
 
@@ -15,7 +16,7 @@ def cat(filename):
     try:
         with open(filename, 'r') as file:
             contents = file.read()
-        print(Fore.LIGHTGREEN_EX + f"Contents of {filename}:" + Fore.WHITE + f"\n{contents}")
+        print(Fore.LIGHTYELLOW_EX + f"Contents of {filename}:" + Fore.WHITE + f"\n{contents}")
     except Exception as e:
         print(Fore.RED + f"Error while reading file: {e}")
 
@@ -23,7 +24,7 @@ def cat(filename):
 def change_directory(directory):
     try:
         os.chdir(directory)
-        print(Fore.LIGHTGREEN_EX + f"Changed directory to: {os.getcwd()}")
+        print(Fore.LIGHTYELLOW_EX + f"Changed directory to: {os.getcwd()}")
     except Exception as e:
         print(Fore.RED + f"Error while changing directory: {e}")
 
@@ -34,7 +35,7 @@ def list_directory():
         if contents:
             for item in contents:
                 if os.path.isdir(item):
-                    print(Fore.LIGHTGREEN_EX + f"{item}/")  # Mappa
+                    print(Fore.LIGHTYELLOW_EX + f"{item}/")  # Mappa
                 else:
                     print(f"{item}")  # Fájl
         else:
@@ -46,7 +47,7 @@ def list_directory():
 def make_directory(directory):
     try:
         os.mkdir(directory)
-        print(Fore.LIGHTGREEN_EX + f"Directory '{directory}' created successfully.")
+        print(Fore.LIGHTYELLOW_EX + f"Directory '{directory}' created successfully.")
     except FileExistsError:
         print(Fore.RED + f"Directory '{directory}' already exists.")
     except Exception as e:
@@ -56,7 +57,7 @@ def make_directory(directory):
 def remove_directory(directory):
     try:
         os.rmdir(directory)
-        print(Fore.LIGHTGREEN_EX + f"Directory '{directory}' removed successfully.")
+        print(Fore.LIGHTYELLOW_EX + f"Directory '{directory}' removed successfully.")
     except FileNotFoundError:
         print(Fore.RED + f"Directory '{directory}' does not exist.")
     except OSError:
@@ -68,7 +69,7 @@ def remove_directory(directory):
 def open_current_directory():
     try:
         os.startfile(os.getcwd()) if os.name == 'nt' else os.system(f'xdg-open "{os.getcwd()}"')
-        print(Fore.LIGHTGREEN_EX + f"Opened current directory '{os.getcwd()}'.")
+        print(Fore.LIGHTYELLOW_EX + f"Opened current directory '{os.getcwd()}'.")
     except Exception as e:
             print(Fore.RED + f"Error opening current directory: {e}")
 
@@ -77,7 +78,7 @@ def open_directory(directory):
     try:
         if os.path.isdir(directory):
             os.startfile(directory) if os.name == 'nt' else os.system(f'xdg-open "{directory}"')
-            print(Fore.LIGHTGREEN_EX + f"Opened directory '{directory}'.")
+            print(Fore.LIGHTYELLOW_EX + f"Opened directory '{directory}'.")
         else:
             print(Fore.RED + f"'{directory}' is not a valid directory.")
     except Exception as e:
@@ -87,7 +88,7 @@ def open_directory(directory):
 def remove_file(filename):
     if os.path.isfile(filename):
         os.remove(filename)
-        print(Fore.LIGHTGREEN_EX + f"File '{filename}' removed successfully.")
+        print(Fore.LIGHTYELLOW_EX + f"File '{filename}' removed successfully.")
     else:
         print(Fore.RED + f"File '{filename}' not found.")
 
@@ -96,7 +97,7 @@ def touch(filename):
     try:
         with open(filename, 'w') as file:
             file.write("")
-        print(Fore.LIGHTGREEN_EX + f"File created: {filename}")
+        print(Fore.LIGHTYELLOW_EX + f"File created: {filename}")
     except Exception as e:
         print(Fore.RED + f"Error while creating file: {e}")
 
@@ -153,7 +154,7 @@ def zip(path):
 
     # Verify if the zip file was created successfully
     if os.path.isfile(zip_filename):
-        print(Fore.LIGHTGREEN_EX + f"Success: '{path}' has been compressed to '{zip_filename}'.")
+        print(Fore.LIGHTYELLOW_EX + f"Success: '{path}' has been compressed to '{zip_filename}'.")
         return
     else:
         print(Fore.RED + f"Error: Failed to create zip file '{zip_filename}'.")
@@ -184,6 +185,68 @@ def unzip(zip_path):
 
     # Verify if the extraction was successful
     if os.path.isdir(extract_dir):
-        print(Fore.LIGHTGREEN_EX + f"Success: '{zip_path}' has been extracted to '{extract_dir}'.")
+        print(Fore.LIGHTYELLOW_EX + f"Success: '{zip_path}' has been extracted to '{extract_dir}'.")
     else:
         print(Fore.RED + f"Error: Failed to extract contents of '{zip_path}'.")
+
+# Tree command | commands.tree(path) | Displays the directory structure in a tree format
+def tree(path):
+    try:
+        if os.path.exists(path):
+            for root, dirs, files in os.walk(path):
+                level = root.replace(path, '').count(os.sep)
+                indent = ' ' * 4 * (level)
+                print(Fore.LIGHTYELLOW_EX + f"{indent}{os.path.basename(root)}/")
+                subindent = ' ' * 4 * (level + 1)
+                for f in files:
+                    print(f"{subindent}{f}")
+        else:
+            print(Fore.RED + f"Path '{path}' does not exist.")
+    except Exception as e:
+        print(Fore.RED + f"Error while displaying tree: {e}")
+
+# Stat command | commands.stat(path) | Display file or directory information
+def stat(path):
+    try:
+        if os.path.exists(path):
+            file_info = os.stat(path)
+            print(Fore.LIGHTYELLOW_EX + f"Information for '{path}':")
+            print(Fore.WHITE + f"Size: {file_info.st_size} bytes")
+            print(Fore.WHITE + f"Last modified: {datetime.fromtimestamp(file_info.st_mtime)}")
+            print(Fore.WHITE + f"Last accessed: {datetime.fromtimestamp(file_info.st_atime)}")
+            print(Fore.WHITE + f"Creation time: {datetime.fromtimestamp(file_info.st_birthtime)}")
+        else:
+            print(Fore.RED + f"Path '{path}' does not exist.")
+    except Exception as e:
+        print(Fore.RED + f"Error while getting file information: {e}")
+
+# Move command | commands.move(item, destination) | Moves a file or directory to a new location
+def mv(item, destination):
+    try:
+        new_path = os.path.join(destination, os.path.basename(item))
+        os.replace(item, new_path)
+        print(Fore.LIGHTYELLOW_EX + f"Moved {item} to {destination}")
+    except Exception as e:
+        print(Fore.RED + f"Error while moving: {e}")
+
+# Copy command | commands.copy(from_path, to_path) | Copies a file from one location to another
+def cp(from_path, to_path):
+    try:
+        if os.path.isfile(from_path):
+            with open(from_path, 'rb') as fsrc:
+                with open(to_path, 'wb') as fdst:
+                    fdst.write(fsrc.read())
+            print(Fore.LIGHTYELLOW_EX + f"Copied {from_path} to {to_path}")
+        else:
+            print(Fore.RED + f"Source file '{from_path}' does not exist.")
+    except Exception as e:
+        print(Fore.RED + f"Error while copying: {e}")
+
+# Rename command | commands.rename(old_name, new_name) | Renames a file or directory
+def rename(old_name, new_name):
+    try:
+        os.rename(old_name, new_name)
+        print(Fore.LIGHTYELLOW_EX + f"Renamed '{old_name}' to '{new_name}'.")
+    except Exception as e:
+        print(Fore.RED + f"Error while renaming: {e}")
+

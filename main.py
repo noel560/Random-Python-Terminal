@@ -1,8 +1,11 @@
 import os
 import sys
+import time
 from colorama import Fore, init
 
 import commands
+
+start_time = time.time()
 
 # Initialize colorama
 init(autoreset=True)
@@ -46,6 +49,21 @@ def execute(input):
 
         case "run": # Run command
             print(Fore.RED + "Run any shell command\nUsage: run <command>")
+
+        case "tree": # Tree command
+            print(Fore.RED + "Display the directory structure\nUsage: tree <path>")
+
+        case "stat": # Stat command
+            print(Fore.RED + "Display file or directory information\nUsage: stat <path>")
+
+        case "mv" | "move": # Move command
+            print(Fore.RED + "Move a file or directory\nUsage: mv <item> <destination>")
+
+        case "cp" | "copy": # Copy command
+            print(Fore.RED + "Copy a file or directory\nUsage: cp <from_path> <to_path>")
+
+        case "rename": # Rename command
+            print(Fore.RED + "Rename a file or directory\nUsage: rename <old_name> <new_name>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
@@ -57,7 +75,7 @@ def execute(input):
 
         case str() if input.startswith("echo"): # Echo command
             echo_text = input[5:]
-            print(echo_text)
+            print(Fore.LIGHTYELLOW_EX + echo_text)
         
         case "reset": # Reset terminal command
             display_welcome()
@@ -113,25 +131,41 @@ def execute(input):
             commands.unzip(zip_path)
 
         case "uptime": # Uptime command
-            pass
+            uptime_seconds = time.time() - start_time
+            uptime_minutes, uptime_seconds = divmod(uptime_seconds, 60)
+            uptime_hours, uptime_minutes = divmod(uptime_minutes, 60)
+            print(Fore.LIGHTYELLOW_EX + f"Terminal uptime: {int(uptime_hours)}h {int(uptime_minutes)}m {int(uptime_seconds)}s")
 
         case "whoami": # Whoami command
-            pass
+            print(Fore.LIGHTYELLOW_EX + f"Current user: {os.getlogin()}")
 
-        case "tree": # Tree command
-            pass
+        case str() if input.startswith("tree"): # Tree command
+            path = input[5:]
+            commands.tree(path)
 
         case str() if input.startswith("stat"): # Stat command
-            pass
+            path = input[5:]
+            commands.stat(path)
 
-        case str() if input.startswith("mv"): # Move command
-            pass
+        case str() if input.startswith("mv") or input.startswith("move"): # Move command
+            if input.startswith("mv"):
+                item, destination = input[3:].split(" ")
+                commands.mv(item, destination)
+            else:
+                item, destination = input[5:].split(" ")
+                commands.move(item, destination)
 
-        case str() if input.startswith("cp"): # Copy command
-            pass
+        case str() if input.startswith("cp") or input.startswith("copy"): # Copy command
+            if input.startswith("cp"):
+                from_path, to_path = input[3:].split(" ")
+                commands.cp(from_path, to_path)
+            else:
+                from_path, to_path = input[5:].split(" ")
+                commands.copy(from_path, to_path)
 
         case str() if input.startswith("rename"): # Rename command
-            pass
+            old_name, new_name = input[7:].split(" ")
+            commands.rename(old_name, new_name)
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
