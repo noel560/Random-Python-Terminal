@@ -64,6 +64,12 @@ def execute(input):
 
         case "rename": # Rename command
             print(Fore.RED + "Rename a file or directory\nUsage: rename <old_name> <new_name>")
+        
+        case "install": # Install command
+            print(Fore.RED + "Install an app\nUsage: install <app_name>")
+
+        case "uninstall": # Uninstall command
+            print(Fore.RED + "Uninstall an app\nUsage: uninstall <app_name>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
@@ -166,6 +172,21 @@ def execute(input):
         case str() if input.startswith("rename"): # Rename command
             old_name, new_name = input[7:].split(" ")
             commands.rename(old_name, new_name)
+
+        case str() if input.startswith("install"): # Install command
+            import app_manager
+            app_name = input[8:]
+            app_manager.install_app(app_name)
+        
+        case str() if input.startswith("uninstall"): # Uninstall command
+            import app_manager
+            app_name = input[10:]
+            app_manager.uninstall_app(app_name)
+        
+        case "applist": # List installed apps command
+            import app_manager
+            print(Fore.LIGHTYELLOW_EX + "Showing installed apps...")
+            app_manager.list_apps()
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")

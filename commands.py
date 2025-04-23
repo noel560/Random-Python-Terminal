@@ -7,7 +7,7 @@ init(autoreset=True)
 
 # Help commands | commands.show_help() | Shows the list of commands
 def show_help():
-    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip uptime whoami tree stat mv cp rename"
+    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip uptime whoami tree stat mv cp rename install uninstall applist"
     commands=commands.replace(" ","\n")
     print(commands)
 
