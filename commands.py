@@ -7,9 +7,95 @@ init(autoreset=True)
 
 # Help commands | commands.show_help() | Shows the list of commands
 def show_help():
-    commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip uptime whoami tree stat mv cp rename install uninstall applist"
-    commands=commands.replace(" ","\n")
-    print(commands)
+    #commands="help exit clear cls echo reset ls dir cd mkdir rmdir opendir run cat touch rm whereis zip unzip uptime whoami tree stat mv cp rename install uninstall applist"
+    #commands=commands.replace(" ","\n")
+    #print(commands)
+    help_text = """
+    Available Commands:
+
+    help       - Displays this help message.
+                Usage: help
+
+    exit       - Exits the terminal interface.
+                Usage: exit
+
+    clear / cls - Clears the screen.
+                Usage: clear OR cls
+
+    echo       - Prints a message to the screen.
+                Usage: echo <message>
+
+    reset      - Resets the terminal or its state (custom behavior, define if needed).
+                Usage: reset
+
+    ls / dir   - Lists the files and directories in the current directory.
+                Usage: ls OR dir
+
+    cd         - Changes the current directory.
+                Usage: cd <path>
+
+    mkdir      - Creates a new directory.
+                Usage: mkdir <directory_name>
+
+    rmdir      - Removes an empty directory.
+                Usage: rmdir <directory_name>
+
+    opendir    - Opens the current directory in the file explorer or a specified directory.
+                Usage: opendir <path>
+
+    run        - Executes a file or program.
+                Usage: run <path> (example: run C:\Windows\System32\calc.exe)
+
+    cat        - Displays the contents of a file.
+                Usage: cat <filename>
+
+    touch      - Creates an empty file or updates the modification time.
+                Usage: touch <filename>
+
+    rm         - Deletes a file.
+                Usage: rm <filename>
+
+    whereis    - Locates the full path of a program.
+                Usage: whereis <app_name> (example: whereis explorer.exe)
+
+    zip        - Compress any file/folder into a .zip archive.
+                Usage: zip <path>
+
+    unzip      - Extracts files from a .zip archive.
+                Usage: unzip <archive_name.zip>
+
+    uptime     - Shows how long the system has been running.
+                Usage: uptime
+
+    whoami     - Displays the current user.
+                Usage: whoami
+
+    tree       - Displays directory structure as a tree.
+                Usage: tree <path>
+
+    stat       - Shows detailed file or directory information.
+                Usage: stat <filename or directory>
+
+    mv         - Moves or renames a file or directory.
+                Usage: mv <source> <destination>
+
+    cp         - Copies a file or directory.
+                Usage: cp <source> <destination>
+
+    rename     - Renames a file or directory.
+                Usage: rename <old_name> <new_name>
+
+    install    - Installs an application using winget.
+                Usage: install <app_name>
+
+    uninstall  - Uninstalls an application using winget.
+                Usage: uninstall <app_name>
+
+    applist    - Lists downloaded applications.
+                Usage: applist
+    """
+
+    print(Fore.LIGHTYELLOW_EX + help_text)
 
 # Cat command | commands.cat(filename) | Reads the contents of a file
 def cat(filename):
