@@ -101,12 +101,12 @@ def execute(input):
             directory = input[6:]
             commands.remove_directory(directory)
 
+        case "opendir": # Open current directory command
+            commands.open_current_directory()
+
         case str() if input.startswith("opendir"): # Open directory command
             directory = input[8:]
             commands.open_directory(directory)
-
-        case "opendir": # Open current directory command
-            commands.open_current_directory()
 
         case str() if input.startswith("run"): # Run command
             command_to_run = input[4:]

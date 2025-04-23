@@ -1,2 +1,7 @@
 __pycache__/
 oldstuff.py
+build/
+dist/
+RatShell.spec
+RatShellIcon.ico
+main.spec
