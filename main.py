@@ -2,13 +2,31 @@ import os
 import sys
 import time
 from colorama import Fore, init
+import urllib.request
+import subprocess
 
 import commands
 
 start_time = time.time()
 
+CURRENT_VERSION = "1.0.0"
+
 # Initialize colorama
 init(autoreset=True)
+
+def get_latest_version():
+    try:
+        with urllib.request.urlopen("https://raw.githubusercontent.com/noel560/Random-Python-Terminal/main/version.txt") as response:
+            return response.read().decode().strip()
+    except:
+        return None
+
+def update_app():
+    url = "https://github.com/noel560/Random-Python-Terminal/releases/latest/download/setup.exe"
+    local_filename = os.path.join(os.getenv("TEMP"), "setup_latest.exe")
+    urllib.request.urlretrieve(url, local_filename)
+    subprocess.Popen([local_filename])
+    exit()
 
 # Main execution function for commands
 def execute(input):
@@ -209,6 +227,11 @@ def display_welcome():
 
 # Main function to handle user input and command execution
 def main():
+    latest = get_latest_version()
+    if latest and latest != CURRENT_VERSION:
+        print(Fore.RED + f"New version available: {latest}. Updating...")
+        update_app()
+
     display_welcome()
 
     username = os.getlogin() # Get the current user's name
