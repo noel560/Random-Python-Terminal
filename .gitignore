@@ -5,3 +5,5 @@ dist/
 RatShell.spec
 RatShellIcon.ico
 main.spec
+build_ratshell.bat
+build_setup/

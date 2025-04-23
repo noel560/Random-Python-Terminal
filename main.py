@@ -22,8 +22,8 @@ def get_latest_version():
         return None
 
 def update_app():
-    url = "https://github.com/noel560/Random-Python-Terminal/releases/latest/download/setup.exe"
-    local_filename = os.path.join(os.getenv("TEMP"), "setup_latest.exe")
+    url = "https://github.com/noel560/Random-Python-Terminal/releases/latest/download/RatShell-Setup.exe"
+    local_filename = os.path.join(os.getenv("TEMP"), "RatShell Setup.exe")
     urllib.request.urlretrieve(url, local_filename)
     subprocess.Popen([local_filename])
     exit()
