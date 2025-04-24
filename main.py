@@ -2,6 +2,7 @@ import os
 import sys
 import time
 from colorama import Fore, init
+import requests
 import urllib.request
 import subprocess
 
@@ -24,9 +25,18 @@ def get_latest_version():
 def update_app():
     url = "https://github.com/noel560/Random-Python-Terminal/releases/latest/download/RatShell.Setup.exe"
     local_filename = os.path.join(os.getenv("TEMP"), "RatShell Setup.exe")
-    urllib.request.urlretrieve(url, local_filename)
-    subprocess.Popen([local_filename])
-    exit()
+
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(local_filename, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        subprocess.Popen([local_filename])
+        exit()
+    else:
+        print(f"Download failed with status code {response.status_code}")
+
 
 # Main execution function for commands
 def execute(input):
