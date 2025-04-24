@@ -10,7 +10,7 @@ import commands
 
 start_time = time.time()
 
-CURRENT_VERSION = "1.0.1" # Current version of the application
+CURRENT_VERSION = "1.0.2" # Current version of the application
 
 # Initialize colorama
 init(autoreset=True)
@@ -35,7 +35,7 @@ def update_app():
                 if chunk:
                     f.write(chunk)
         subprocess.Popen([local_filename])
-        exit()
+        sys.exit()
     else:
         print(f"Download failed with status code {response.status_code}")
 
@@ -103,6 +103,21 @@ def execute(input):
 
         case "kill": # Kill command
             print(Fore.RED + "Kill a process\nUsage: kill <process_name>")
+        
+        case "randnum": # Random command
+            print(Fore.RED + "Generate a random number\nUsage: randnum <min> <max>")
+        
+        case "convert": # Convert command
+            print(Fore.RED + "Converts between different units\nUsage: convert <value> <from_unit> <to_unit>")
+
+        case "calc": # Calculator command
+            print(Fore.RED + "Simple calculator\nUsage: calc <expression>")
+
+        case "encrypt": # Encrypt command
+            print(Fore.RED + "Encrypt a file\nUsage: encrypt <file_path> <password>")
+
+        case "decrypt": # Decrypt command
+            print(Fore.RED + "Decrypt a file\nUsage: decrypt <file_path> <password>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
@@ -241,6 +256,37 @@ def execute(input):
 
         case "stopwatch": # Stopwatch command
             commands.stopwatch()
+
+        case str() if input.startswith("randnum"): # Random number command
+            try:
+                _, min_num, max_num = input.split(" ")
+                commands.randnum(int(min_num), int(max_num))
+            except ValueError:
+                print(Fore.RED + "Usage: randnum <min> <max>")
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
+
+        case str() if input.startswith("calc"): # Calc command
+            expression = input[5:]
+            commands.calc(expression)
+
+        case str() if input.startswith("encrypt"): # Encrypt command
+            try:
+                _, file_path, password = input.split(" ")
+                commands.encrypt_file(file_path, password)
+            except ValueError:
+                print(Fore.RED + "Usage: encrypt <file_path> <password>")
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
+
+        case str() if input.startswith("decrypt"): # Decrypt command
+            try:
+                _, file_path, password = input.split(" ")
+                commands.decrypt_file(file_path, password)
+            except ValueError:
+                print(Fore.RED + "Wrong password\nUsage: decrypt <file_path> <password>")
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")

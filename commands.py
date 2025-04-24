@@ -4,6 +4,13 @@ import zipfile
 from datetime import datetime
 import random
 import time
+import math
+from simpleeval import simple_eval
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+import base64
+import hashlib
 
 init(autoreset=True)
 
@@ -46,7 +53,7 @@ def show_help():
                 Usage: opendir <path>
 
     run        - Executes a file or program.
-                Usage: run <path> (example: run C:\Windows\System32\calc.exe)
+                Usage: run <path> (example: run C:/Windows/System32/calc.exe)
 
     cat        - Displays the contents of a file.
                 Usage: cat <filename>
@@ -104,6 +111,18 @@ def show_help():
 
     stopwatch  - Starts a stopwatch. Type 'stopwatch' again to stop it.
                 Usage: stopwatch
+
+    randnum    - Generates a random number between min and max.
+                Usage: randnum <min> <max>
+    
+    calc       - Evaluates a mathematical expression.
+                Usage: calc <expression>
+
+    encrypt    - Encrypts a file using AES encryption.
+                Usage: encrypt <file_path> <password>
+
+    decrypt    - Decrypts a file using AES decryption.
+                Usage: decrypt <file_path> <password>
     """
 
     print(Fore.LIGHTYELLOW_EX + help_text)
@@ -380,3 +399,65 @@ def stopwatch():
         elapsed_time = time.time() - stopwatch_start_time
         stopwatch_start_time = None  # Reset the start time
         print(Fore.LIGHTYELLOW_EX + f"Stopwatch stopped. Elapsed time: {elapsed_time:.2f} seconds.")
+
+# Randnum command | commands.randnum() | Generates a random number between min and max
+def randnum(min_num, max_num):
+    try:
+        min_num = int(min_num)
+        max_num = int(max_num)
+        if min_num >= max_num:
+            print(Fore.RED + "Error: Minimum number must be less than maximum number.")
+            return
+        random_number = random.randint(min_num, max_num)
+        print(Fore.LIGHTYELLOW_EX + f"Random number between {min_num} and {max_num}: {random_number}")
+    except ValueError:
+        print(Fore.RED + "Error: Please provide valid integers for min and max numbers.")
+    except Exception as e:
+        print(Fore.RED + f"Error while generating random number: {e}")
+
+# Calc command | commands.calc(expression) | Evaluates a mathematical expression
+def calc(expression):
+    try:
+        result = simple_eval(expression)
+        print(Fore.LIGHTYELLOW_EX + f"Result: {result}")
+    except Exception as e:
+        print(Fore.RED + f"Error while calculating: {e}")
+
+# Encrypt command | commands.encrypt(file_path, password) | Encrypts a file using AES encryption
+def encrypt_file(file_path, password):
+    key = hashlib.sha256(password.encode()).digest()
+
+    iv = get_random_bytes(AES.block_size)
+
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    with open(file_path, 'rb') as file:
+        file_data = file.read()
+
+    padded_data = pad(file_data, AES.block_size)
+
+    ciphertext = cipher.encrypt(padded_data)
+
+    with open(file_path, 'wb') as output_file:
+        output_file.write(base64.b64encode(iv + ciphertext))
+
+    print(f"File '{file_path}' encrypted and saved as '{file_path}'.")
+
+# Decrypt command | commands.decrypt(file_path, password) | Decrypts a file using AES decryption
+def decrypt_file(file_path, password):
+    key = hashlib.sha256(password.encode()).digest()
+
+    with open(file_path, 'rb') as file:
+        encrypted_data = base64.b64decode(file.read())
+
+    iv = encrypted_data[:AES.block_size]
+    ciphertext = encrypted_data[AES.block_size:]
+
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    decrypted_data = unpad(cipher.decrypt(ciphertext), AES.block_size)
+
+    with open(file_path, 'wb') as output_file:
+        output_file.write(decrypted_data)
+
+    print(f"File '{file_path}' decrypted and saved as '{file_path}'.")
