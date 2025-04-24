@@ -10,11 +10,12 @@ import commands
 
 start_time = time.time()
 
-CURRENT_VERSION = "1.0.0"
+CURRENT_VERSION = "1.0.1" # Current version of the application
 
 # Initialize colorama
 init(autoreset=True)
 
+# Get the latest version from the GitHub repository
 def get_latest_version():
     try:
         with urllib.request.urlopen("https://raw.githubusercontent.com/noel560/Random-Python-Terminal/main/version.txt") as response:
@@ -22,6 +23,7 @@ def get_latest_version():
     except:
         return None
 
+# Function to update the application
 def update_app():
     url = "https://github.com/noel560/Random-Python-Terminal/releases/latest/download/RatShell.Setup.exe"
     local_filename = os.path.join(os.getenv("TEMP"), "RatShell Setup.exe")
@@ -98,11 +100,25 @@ def execute(input):
 
         case "uninstall": # Uninstall command
             print(Fore.RED + "Uninstall an app\nUsage: uninstall <app_name>")
+
+        case "kill": # Kill command
+            print(Fore.RED + "Kill a process\nUsage: kill <process_name>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
         case "help": # Help command
             commands.show_help()
+
+        case "version": # Version command
+            print(Fore.LIGHTYELLOW_EX + f"RatShell version: {CURRENT_VERSION}")
+
+        case "update": # Update command
+            latest = get_latest_version()
+            if latest and latest != CURRENT_VERSION:
+                print(Fore.RED + f"New version available: {latest}. Updating...")
+                update_app()
+            else:
+                print(Fore.LIGHTYELLOW_EX + "You are using the latest version.")
         
         case "clear" | "cls": # Clear command
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -215,6 +231,16 @@ def execute(input):
             import app_manager
             print(Fore.LIGHTYELLOW_EX + "Showing installed apps...")
             app_manager.list_apps()
+
+        case str() if input.startswith("kill"): # Kill command
+            process_name = input[5:]
+            commands.kill(process_name)
+
+        case "coinflip": # Coin flip command
+            commands.coinflip()
+
+        case "stopwatch": # Stopwatch command
+            commands.stopwatch()
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")

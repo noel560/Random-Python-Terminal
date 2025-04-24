@@ -2,6 +2,8 @@ from colorama import init, Fore
 import os
 import zipfile
 from datetime import datetime
+import random
+import time
 
 init(autoreset=True)
 
@@ -93,6 +95,15 @@ def show_help():
 
     applist    - Lists downloaded applications.
                 Usage: applist
+
+    kill       - Kills a specified process.
+                Usage: kill <process_name>
+
+    coinflip   - Simulates a coin flip.
+                Usage: coinflip
+
+    stopwatch  - Starts a stopwatch. Type 'stopwatch' again to stop it.
+                Usage: stopwatch
     """
 
     print(Fore.LIGHTYELLOW_EX + help_text)
@@ -336,3 +347,36 @@ def rename(old_name, new_name):
     except Exception as e:
         print(Fore.RED + f"Error while renaming: {e}")
 
+# Kill command | commands.kill(process_name) | Kills a specified process
+def kill(process_name):
+    try:
+        os.system(f"taskkill /f /im {process_name}")
+        print(Fore.LIGHTYELLOW_EX + f"Killed process '{process_name}'.")
+    except Exception as e:
+        print(Fore.RED + f"Error while killing process: {e}")
+
+# Coinflip command | commands.coinflip() | Simulates a coin flip
+def coinflip():
+    print(Fore.LIGHTYELLOW_EX + "Flipping a coin.")
+    time.sleep(0.5)
+    print(Fore.LIGHTYELLOW_EX + "Flipping a coin..")
+    time.sleep(0.5)
+    print(Fore.LIGHTYELLOW_EX + "Flipping a coin...")
+    time.sleep(0.5)
+
+    result = random.choice(["Heads", "Tails"])
+    print(Fore.LIGHTYELLOW_EX + f"Coin flip result: {result}")
+
+# Stopwatch command | commands.stopwatch() | Starts and stops a stopwatch
+stopwatch_start_time = None
+def stopwatch():
+    global stopwatch_start_time
+    if stopwatch_start_time is None:
+        # Start the stopwatch
+        stopwatch_start_time = time.time()
+        print(Fore.LIGHTYELLOW_EX + "Stopwatch started. Type 'stopwatch' again to stop.")
+    else:
+        # Stop the stopwatch and calculate elapsed time
+        elapsed_time = time.time() - stopwatch_start_time
+        stopwatch_start_time = None  # Reset the start time
+        print(Fore.LIGHTYELLOW_EX + f"Stopwatch stopped. Elapsed time: {elapsed_time:.2f} seconds.")
