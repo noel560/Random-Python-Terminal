@@ -287,6 +287,10 @@ def execute(input):
                 print(Fore.RED + "Wrong password\nUsage: decrypt <file_path> <password>")
             except Exception as e:
                 print(Fore.RED + f"Error: {e}")
+
+        case "processlist": # Process list command
+            result=subprocess.run('powershell "Get-WmiObject Win32_Process | ForEach-Object { $_.ProcessId, $_.ParentProcessId, $_.Name }"', shell=True, capture_output=True, text=True)
+            print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
@@ -307,12 +311,16 @@ def display_welcome():
     print("Type 'help' to see the list of commands.")
     print("")
 
-# Main function to handle user input and command execution
-def main():
     latest = get_latest_version()
     if latest and latest != CURRENT_VERSION:
-        print(Fore.RED + f"New version available: {latest}. Updating...")
-        update_app()
+        print(Fore.LIGHTGREEN_EX + f"New version available: {latest}. Type 'update' to update.")
+
+# Main function to handle user input and command execution
+def main():
+    #latest = get_latest_version()
+    #if latest and latest != CURRENT_VERSION:
+    #    print(Fore.RED + f"New version available: {latest}. Updating...")
+    #    update_app()
 
     display_welcome()
 

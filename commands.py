@@ -25,6 +25,12 @@ def show_help():
     help       - Displays this help message.
                 Usage: help
 
+    version    - Displays the current version of the terminal interface.
+                Usage: version
+    
+    update     - Updates the terminal interface to the latest version.
+                Usage: update
+
     exit       - Exits the terminal interface.
                 Usage: exit
 
@@ -123,6 +129,9 @@ def show_help():
 
     decrypt    - Decrypts a file using AES decryption.
                 Usage: decrypt <file_path> <password>
+
+    processlist - Lists all running processes.
+                Usage: processlist
     """
 
     print(Fore.LIGHTYELLOW_EX + help_text)
