@@ -322,10 +322,6 @@ def display_welcome():
     print("Type 'help' to see the list of commands.")
     print("")
 
-    latest = get_latest_version()
-    if latest and latest != CURRENT_VERSION:
-        print(Fore.LIGHTGREEN_EX + f"New version available: {latest}. Type 'update' to update.")
-
 # Main function to handle user input and command execution
 def main():
     #latest = get_latest_version()
@@ -339,6 +335,11 @@ def main():
     pc_name = os.uname().nodename if hasattr(os, 'uname') else os.environ.get('COMPUTERNAME', 'PC') # Get the PC name
 
     os.chdir(os.path.expanduser("~")) # Change directory to the user's home directory
+
+    # New version available
+    latest = get_latest_version()
+    if latest and latest != CURRENT_VERSION:
+        print(Fore.LIGHTGREEN_EX + f"New version available: {latest}. Type 'update' to update.")
 
     while True:
         current_directory = os.getcwd() # Get the current directory
