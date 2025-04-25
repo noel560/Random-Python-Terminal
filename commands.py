@@ -22,116 +22,122 @@ def show_help():
     help_text = """
     Available Commands:
 
-    help       - Displays this help message.
+    help        - Displays this help message.
                 Usage: help
 
-    version    - Displays the current version of the terminal interface.
+    version     - Displays the current version of the terminal interface.
                 Usage: version
     
-    update     - Updates the terminal interface to the latest version.
+    update      - Updates the terminal interface to the latest version.
                 Usage: update
 
-    exit       - Exits the terminal interface.
+    exit        - Exits the terminal interface.
                 Usage: exit
 
     clear / cls - Clears the screen.
                 Usage: clear OR cls
 
-    echo       - Prints a message to the screen.
+    echo        - Prints a message to the screen.
                 Usage: echo <message>
 
-    reset      - Resets the terminal or its state (custom behavior, define if needed).
+    reset       - Resets the terminal or its state (custom behavior, define if needed).
                 Usage: reset
 
-    ls / dir   - Lists the files and directories in the current directory.
+    ls / dir    - Lists the files and directories in the current directory.
                 Usage: ls OR dir
 
-    cd         - Changes the current directory.
+    cd          - Changes the current directory.
                 Usage: cd <path>
 
-    mkdir      - Creates a new directory.
+    mkdir       - Creates a new directory.
                 Usage: mkdir <directory_name>
 
-    rmdir      - Removes an empty directory.
+    rmdir       - Removes an empty directory.
                 Usage: rmdir <directory_name>
 
-    opendir    - Opens the current directory in the file explorer or a specified directory.
+    opendir     - Opens the current directory in the file explorer or a specified directory.
                 Usage: opendir <path>
 
-    run        - Executes a file or program.
+    run         - Executes a file or program.
                 Usage: run <path> (example: run C:/Windows/System32/calc.exe)
 
-    cat        - Displays the contents of a file.
+    cat         - Displays the contents of a file.
                 Usage: cat <filename>
 
-    touch      - Creates an empty file or updates the modification time.
+    touch       - Creates an empty file or updates the modification time.
                 Usage: touch <filename>
 
-    rm         - Deletes a file.
+    rm          - Deletes a file.
                 Usage: rm <filename>
 
-    whereis    - Locates the full path of a program.
+    whereis     - Locates the full path of a program.
                 Usage: whereis <app_name> (example: whereis explorer.exe)
 
-    zip        - Compress any file/folder into a .zip archive.
+    zip         - Compress any file/folder into a .zip archive.
                 Usage: zip <path>
 
-    unzip      - Extracts files from a .zip archive.
+    unzip       - Extracts files from a .zip archive.
                 Usage: unzip <archive_name.zip>
 
-    uptime     - Shows how long the system has been running.
+    uptime      - Shows how long the system has been running.
                 Usage: uptime
 
-    whoami     - Displays the current user.
+    whoami      - Displays the current user.
                 Usage: whoami
 
-    tree       - Displays directory structure as a tree.
+    tree        - Displays directory structure as a tree.
                 Usage: tree <path>
 
-    stat       - Shows detailed file or directory information.
+    stat        - Shows detailed file or directory information.
                 Usage: stat <filename or directory>
 
-    mv         - Moves or renames a file or directory.
+    mv          - Moves or renames a file or directory.
                 Usage: mv <source> <destination>
 
-    cp         - Copies a file or directory.
+    cp          - Copies a file or directory.
                 Usage: cp <source> <destination>
 
-    rename     - Renames a file or directory.
+    rename      - Renames a file or directory.
                 Usage: rename <old_name> <new_name>
 
-    install    - Installs an application using winget.
+    install     - Installs an application using winget.
                 Usage: install <app_name>
 
-    uninstall  - Uninstalls an application using winget.
+    uninstall   - Uninstalls an application using winget.
                 Usage: uninstall <app_name>
 
-    applist    - Lists downloaded applications.
+    applist     - Lists downloaded applications.
                 Usage: applist
 
-    kill       - Kills a specified process.
+    kill        - Kills a specified process.
                 Usage: kill <process_name>
 
-    coinflip   - Simulates a coin flip.
+    coinflip    - Simulates a coin flip.
                 Usage: coinflip
 
-    stopwatch  - Starts a stopwatch. Type 'stopwatch' again to stop it.
+    stopwatch   - Starts a stopwatch. Type 'stopwatch' again to stop it.
                 Usage: stopwatch
 
-    randnum    - Generates a random number between min and max.
+    randnum     - Generates a random number between min and max.
                 Usage: randnum <min> <max>
     
-    calc       - Evaluates a mathematical expression.
+    calc        - Evaluates a mathematical expression.
                 Usage: calc <expression>
 
-    encrypt    - Encrypts a file using AES encryption.
+    encrypt     - Encrypts a file using AES encryption.
                 Usage: encrypt <file_path> <password>
 
-    decrypt    - Decrypts a file using AES decryption.
+    decrypt     - Decrypts a file using AES decryption.
                 Usage: decrypt <file_path> <password>
 
     processlist - Lists all running processes.
                 Usage: processlist
+
+    pwd         - Displays the current working directory.
+                Usage: pwd
+
+    git         - Github commands
+                Usage: git <command> <args>
     """
 
     print(Fore.LIGHTYELLOW_EX + help_text)

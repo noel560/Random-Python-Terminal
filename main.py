@@ -10,7 +10,7 @@ import commands
 
 start_time = time.time()
 
-CURRENT_VERSION = "1.0.2" # Current version of the application
+CURRENT_VERSION = "1.0.3" # Current version of the application
 
 # Initialize colorama
 init(autoreset=True)
@@ -118,6 +118,9 @@ def execute(input):
 
         case "decrypt": # Decrypt command
             print(Fore.RED + "Decrypt a file\nUsage: decrypt <file_path> <password>")
+
+        case "git": # Git command
+            print(Fore.RED + "Git command\nUsage: git <command>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
@@ -291,6 +294,14 @@ def execute(input):
         case "processlist": # Process list command
             result=subprocess.run('powershell "Get-WmiObject Win32_Process | ForEach-Object { $_.ProcessId, $_.ParentProcessId, $_.Name }"', shell=True, capture_output=True, text=True)
             print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
+
+        case str() if input.startswith("git"): # Git command
+            git_command = input[4:]
+            result = subprocess.run(['git'] + git_command.split(), capture_output=True, text=True)
+            print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
+
+        case "pwd": # Print working directory command
+            print(Fore.LIGHTYELLOW_EX + os.getcwd())
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")
