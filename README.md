@@ -6,14 +6,17 @@ Just a random CLI with useful commands.
 
 ## Installation
 
-1. Install with the setup.exe
+1. Install with the RatShell Setup.exe
    ```
    https://github.com/noel560/Random-Python-Terminal/releases/latest/download/RatShell.Setup.exe
    ```
 
-2. Or clone the repo and run main.py
-   ```
-   git clone https://github.com/noel560/Random-Python-Terminal.git
-   cd Random-Python-Terminal
-   py main.py
-   ```
+2. Download manually
+   - Clone the repository
+      ```
+      git clone https://github.com/noel560/Random-Python-Terminal.git
+      cd Random-Python-Terminal
+      py main.py
+      ```
+   - Run install.bat to install all the requirements
+   - Start main.py or start.bat
