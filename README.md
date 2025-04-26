@@ -1,4 +1,6 @@
-# RatShell
+# RatShell 
+![Downloads](https://img.shields.io/github/downloads/noel560/Random-Python-Terminal/total?style=flat-square) ![Stars](https://img.shields.io/github/stars/noel560/Random-Python-Terminal?style=flat-square) ![Forks](https://img.shields.io/github/forks/noel560/Random-Python-Terminal?style=flat-square)
+
 
 Just a random CLI with useful commands.
 
