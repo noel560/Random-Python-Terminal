@@ -16,7 +16,6 @@ Just a random CLI with useful commands.
       ```
       git clone https://github.com/noel560/Random-Python-Terminal.git
       cd Random-Python-Terminal
-      py main.py
       ```
    - Run install.bat to install all the requirements
    - Start main.py or start.bat
