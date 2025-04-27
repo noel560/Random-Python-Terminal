@@ -121,6 +121,9 @@ def execute(input):
 
         case "git": # Git command
             print(Fore.RED + "Git command\nUsage: git <command>")
+
+        case "convert": # Convert command
+            print(Fore.RED + "Convert currency\nUsage: convert <value> <from_unit> <to_unit>")
         #----------------------------------------------------------------------
 
         # Input handling for commands
@@ -296,12 +299,44 @@ def execute(input):
             print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
 
         case str() if input.startswith("git"): # Git command
-            git_command = input[4:]
-            result = subprocess.run(['git'] + git_command.split(), capture_output=True, text=True)
-            print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
+            #git_command = input[4:]
+            result = subprocess.run(input, capture_output=True, text=True)
+            if not result.stdout == "":
+                print(Fore.LIGHTYELLOW_EX + result.stdout.strip())
+            if not result.stderr == "":
+                print(Fore.LIGHTYELLOW_EX + result.stderr.strip())
 
         case "pwd": # Print working directory command
             print(Fore.LIGHTYELLOW_EX + os.getcwd())
+
+        case str() if input.startswith("convert"): # Convert command
+            try:
+                _, value, from_unit, to_unit = input.split(" ")
+                commands.currency_converter(value, from_unit, to_unit)
+            except ValueError:
+                print(Fore.RED + "Usage: convert <value> <from_unit> <to_unit>")
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
+
+        case str() if input.startswith("notes"): # Notes command
+            try:
+                _, action, *args = input.split(" ")
+                if action == "add":
+                    note = " ".join(args)
+                    commands.notes_add(note)
+                elif action == "view":
+                    commands.notes_view()
+                elif action == "remove":
+                    note_id = args[0]
+                    commands.notes_remove(note_id)
+                elif action == "reset":
+                    commands.notes_reset()
+                else:
+                    print(Fore.RED + "Usage: notes <add/view/remove/reset> [note]")
+            except ValueError:
+                print(Fore.RED + "Usage: notes <add/view/remove/reset> [note]")
+            except Exception as e:
+                print(Fore.RED + f"Error: {e}")
         
         case _:
             print(Fore.RED + "Command not found. Type 'help' for a list of commands.")

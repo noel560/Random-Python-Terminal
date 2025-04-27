@@ -11,6 +11,7 @@ from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import base64
 import hashlib
+from currency_converter import CurrencyConverter
 
 init(autoreset=True)
 
@@ -59,7 +60,8 @@ def show_help():
                 Usage: opendir <path>
 
     run         - Executes a file or program.
-                Usage: run <path> (example: run C:/Windows/System32/calc.exe)
+                Usage: run <path>
+                Example: run C:/Windows/System32/calc.exe
 
     cat         - Displays the contents of a file.
                 Usage: cat <filename>
@@ -71,7 +73,8 @@ def show_help():
                 Usage: rm <filename>
 
     whereis     - Locates the full path of a program.
-                Usage: whereis <app_name> (example: whereis explorer.exe)
+                Usage: whereis <app_name>
+                Example: whereis explorer.exe
 
     zip         - Compress any file/folder into a .zip archive.
                 Usage: zip <path>
@@ -138,6 +141,18 @@ def show_help():
 
     git         - Github commands
                 Usage: git <command> <args>
+
+    convert     - Converts currency using the CurrencyConverter library.
+                Usage: convert <amount> <from_currency> <to_currency>
+                Example: convert 100 USD EUR
+
+    notes      - Manages notes stored in a file.
+                Usage: notes <command> <args>
+                Commands:
+                    view    - Displays the notes.
+                    add     - Adds a note.
+                    remove  - Removes a note by ID.
+                    reset   - Resets the notes file.
     """
 
     print(Fore.LIGHTYELLOW_EX + help_text)
@@ -476,3 +491,92 @@ def decrypt_file(file_path, password):
         output_file.write(decrypted_data)
 
     print(f"File '{file_path}' decrypted and saved as '{file_path}'.")
+
+# Currency converter command | commands.currency_converter(amount, from_currency, to_currency) | Converts currency using the CurrencyConverter library
+def currency_converter(amount, from_currency, to_currency):
+    try:
+        c = CurrencyConverter()
+        from_currency = from_currency.upper()
+        to_currency = to_currency.upper()
+        converted_amount = c.convert(amount, from_currency, to_currency)
+        print(Fore.LIGHTYELLOW_EX + f"{amount} {from_currency} is equal to {converted_amount:.2f} {to_currency}.")
+    except Exception as e:
+        print(Fore.RED + f"Error while converting currency: {e}")
+
+# Notes view command | commands.notes_view() | Displays the notes stored in a file
+def notes_view():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    notes_path = os.path.join(base_path, "notes.txt")
+    if os.path.exists(notes_path):
+        with open(notes_path, 'r') as file:
+            notes = file.readlines()
+        if notes:
+            print(Fore.LIGHTYELLOW_EX + "Notes:")
+            for note in notes:
+                print(Fore.WHITE + note.strip())
+        else:
+            print(Fore.RED + "No notes found.")
+    else:
+        with open(notes_path, 'w') as file:
+            file.write("")
+        print(Fore.RED + "Notes file not found.\nCreating a new notes file.")
+
+# Notes add command | commands.notes_add(note) | Adds a note to the notes file
+def notes_add(note):
+    if note == "" or note.isspace():
+        print(Fore.RED + "Error: Note cannot be empty.\nUsage: notes add <note>")
+        return
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    notes_path = os.path.join(base_path, "notes.txt")
+    if os.path.exists(notes_path):
+        with open(notes_path, 'a') as file:
+            file.write(note + "\n")
+        print(Fore.LIGHTYELLOW_EX + "Note added successfully.")
+    else:
+        with open(notes_path, 'w') as file:
+            file.write(note + "\n")
+        print(Fore.RED + "Notes file not found.\nCreating a new notes file and adding the note.")
+
+# Notes remove command | commands.notes_remove(note_id) | Removes a note from the notes file
+def notes_remove(note_id):
+    try:
+        note_id = int(note_id)  # Convert note_id to an integer
+        note_id -= 1  # Adjust for zero-based index
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        notes_path = os.path.join(base_path, "notes.txt")
+        if os.path.exists(notes_path):
+            with open(notes_path, 'r') as file:
+                notes = file.readlines()
+            if 0 <= note_id < len(notes):
+                removed_note = notes.pop(note_id)
+                with open(notes_path, 'w') as file:
+                    file.writelines(notes)
+                print(Fore.LIGHTYELLOW_EX + f"Removed note: {removed_note.strip()}")
+            else:
+                print(Fore.RED + "Invalid note ID.")
+        else:
+            with open(notes_path, 'w') as file:
+                file.write("")
+            print(Fore.RED + "Notes file not found.\nCreating a new notes file.")
+    except ValueError:
+        print(Fore.RED + "Error: Note ID must be an integer.\nUsage: notes remove <note_id>")
+
+# Notes reset command | commands.notes_reset() | Resets the notes file
+def notes_reset():
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    notes_path = os.path.join(base_path, "notes.txt")
+    if os.path.exists(notes_path):
+        with open(notes_path, 'w') as file:
+            file.write("")
+        print(Fore.LIGHTYELLOW_EX + "Notes reset successfully.")
+    else:
+        with open(notes_path, 'w') as file:
+            file.write("")
+        print(Fore.RED + "Notes file not found.\nCreating a new notes file.")
+
+
+
+
+
+
+

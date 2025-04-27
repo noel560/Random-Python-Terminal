@@ -2,3 +2,4 @@ colorama
 requests
 simpleeval
 pycryptodome
+CurrencyConverter
