@@ -94,7 +94,7 @@ def show_help():
     stat        - Shows detailed file or directory information.
                 Usage: stat <filename or directory>
 
-    mv          - Moves or renames a file or directory.
+    mv          - Moves a file or directory to a new location.
                 Usage: mv <source> <destination>
 
     cp          - Copies a file or directory.
@@ -142,9 +142,9 @@ def show_help():
     git         - Github commands
                 Usage: git <command> <args>
 
-    convert     - Converts currency using the CurrencyConverter library.
-                Usage: convert <amount> <from_currency> <to_currency>
-                Example: convert 100 USD EUR
+    currency     - Converts currency.
+                Usage: currency <amount> <from_currency> <to_currency>
+                Example: currency 100 USD EUR
 
     notes      - Manages notes stored in a file.
                 Usage: notes <command> <args>
@@ -159,6 +159,10 @@ def show_help():
 
 # Cat command | commands.cat(filename) | Reads the contents of a file
 def cat(filename):
+    if filename == "" or filename.isspace():
+        print(Fore.RED + "See the content of a file\nUsage: cat <filename>")
+        return
+
     try:
         with open(filename, 'r') as file:
             contents = file.read()
@@ -168,6 +172,10 @@ def cat(filename):
 
 # Change directory (cd) command | commands.change_directory(directory) | Changes the current working directory
 def change_directory(directory):
+    if directory == "" or directory.isspace():
+        print(Fore.RED + "Changes the current directory\nUsage: cd <directory>")
+        return
+
     try:
         os.chdir(directory)
         print(Fore.LIGHTYELLOW_EX + f"Changed directory to: {os.getcwd()}")
@@ -191,6 +199,10 @@ def list_directory():
 
 # Make directory (mkdir) command | commands.make_directory(directory) | Creates a new directory
 def make_directory(directory):
+    if directory == "" or directory.isspace():
+        print(Fore.RED + "Creates a new directory\nUsage: mkdir <directory>")
+        return
+
     try:
         os.mkdir(directory)
         print(Fore.LIGHTYELLOW_EX + f"Directory '{directory}' created successfully.")
@@ -201,6 +213,10 @@ def make_directory(directory):
 
 # Remove directory (rmdir) command | commands.remove_directory(directory) | Removes a specified directory
 def remove_directory(directory):
+    if directory == "" or directory.isspace():
+        print(Fore.RED + "Removes a directory\nUsage: rmdir <directory>")
+        return
+    
     try:
         os.rmdir(directory)
         print(Fore.LIGHTYELLOW_EX + f"Directory '{directory}' removed successfully.")
@@ -232,6 +248,10 @@ def open_directory(directory):
 
 # Remove file (rm) command | commands.remove_file(filename) | Removes a specified file
 def remove_file(filename):
+    if filename == "" or filename.isspace():
+        print(Fore.RED + "Removes a file\nUsage: rm <filename>")
+        return
+
     if os.path.isfile(filename):
         os.remove(filename)
         print(Fore.LIGHTYELLOW_EX + f"File '{filename}' removed successfully.")
@@ -240,6 +260,10 @@ def remove_file(filename):
 
 # Touch command | commands.touch(filename) | Creates a new file
 def touch(filename):
+    if filename == "" or filename.isspace():
+        print(Fore.RED + "Creates a new file\nUsage: touch <filename>")
+        return
+    
     try:
         with open(filename, 'w') as file:
             file.write("")
@@ -249,6 +273,10 @@ def touch(filename):
 
 # Run command | commands.run(command_to_run) | Executes a specified command in the shell
 def run(command_to_run):
+    if command_to_run == "" or command_to_run.isspace():
+        print(Fore.RED + "Runs a command\nUsage: run <command>")
+        return
+    
     try:
         os.system(command_to_run)
     except Exception as e:
@@ -259,6 +287,10 @@ def get_drives():
     return [f"{chr(drive)}:\\" for drive in range(65, 91) if os.path.exists(f"{chr(drive)}:\\")]
 # Whereis command | commands.whereis(filename) | Searches for a file in all drives
 def whereis(filename):
+    if filename == "" or filename.isspace():
+        print(Fore.RED + "Searches for a file in all drives\nUsage: whereis <filename>")
+        return
+
     drives = get_drives()
     for drive in drives:
         for root, dirs, files in os.walk(drive):  # Az összes meghajtót végigjárja
@@ -269,6 +301,9 @@ def whereis(filename):
 
 # Zip command | commands.zip(path) | Compresses a file or directory into a zip file
 def zip(path):
+    if path == "" or path.isspace():
+        print(Fore.RED + "Compresses a file or directory into a zip file\nUsage: zip <path>")
+        return
     # Check if the path exists
     if not os.path.exists(path):
         print(Fore.RED + f"Error: Path '{path}' not found.")
@@ -308,6 +343,9 @@ def zip(path):
 
 # Unzip command | commands.unzip(zip_path) | Extracts a zip file to a specified directory
 def unzip(zip_path):
+    if zip_path == "" or zip_path.isspace():
+        print(Fore.RED + "Extracts files from a .zip archive\nUsage: unzip <zip_path>")
+        return
     # Check if the zip file exists
     if not os.path.exists(zip_path):
         print(Fore.RED + f"Error: File '{zip_path}' not found.")
@@ -337,6 +375,10 @@ def unzip(zip_path):
 
 # Tree command | commands.tree(path) | Displays the directory structure in a tree format
 def tree(path):
+    if path == "" or path.isspace():
+        print(Fore.RED + "Displays directory structure as a tree\nUsage: tree <path>")
+        return
+    
     try:
         if os.path.exists(path):
             for root, dirs, files in os.walk(path):
@@ -353,6 +395,10 @@ def tree(path):
 
 # Stat command | commands.stat(path) | Display file or directory information
 def stat(path):
+    if path == "" or path.isspace():
+        print(Fore.RED + "Displays detailed file or directory information\nUsage: stat <path>")
+        return
+    
     try:
         if os.path.exists(path):
             file_info = os.stat(path)
@@ -390,6 +436,10 @@ def cp(from_path, to_path):
 
 # Rename command | commands.rename(old_name, new_name) | Renames a file or directory
 def rename(old_name, new_name):
+    if old_name == "" or old_name.isspace() or new_name == "" or new_name.isspace():
+        print(Fore.RED + "Renames a file or directory\nUsage: rename <old_name> <new_name>")
+        return
+    
     try:
         os.rename(old_name, new_name)
         print(Fore.LIGHTYELLOW_EX + f"Renamed '{old_name}' to '{new_name}'.")
@@ -398,6 +448,10 @@ def rename(old_name, new_name):
 
 # Kill command | commands.kill(process_name) | Kills a specified process
 def kill(process_name):
+    if process_name == "" or process_name.isspace():
+        print(Fore.RED + "Kills a specified process\nUsage: kill <process_name>")
+        return
+    
     try:
         os.system(f"taskkill /f /im {process_name}")
         print(Fore.LIGHTYELLOW_EX + f"Killed process '{process_name}'.")
@@ -432,6 +486,10 @@ def stopwatch():
 
 # Randnum command | commands.randnum() | Generates a random number between min and max
 def randnum(min_num, max_num):
+    if min_num == "" or min_num.isspace() or max_num == "" or max_num.isspace():
+        print(Fore.RED + "Generates a random number between min and max\nUsage: randnum <min> <max>")
+        return
+    
     try:
         min_num = int(min_num)
         max_num = int(max_num)
@@ -447,6 +505,10 @@ def randnum(min_num, max_num):
 
 # Calc command | commands.calc(expression) | Evaluates a mathematical expression
 def calc(expression):
+    if expression == "" or expression.isspace():
+        print(Fore.RED + "Evaluates a mathematical expression\nUsage: calc <expression>")
+        return
+    
     try:
         result = simple_eval(expression)
         print(Fore.LIGHTYELLOW_EX + f"Result: {result}")
@@ -494,6 +556,10 @@ def decrypt_file(file_path, password):
 
 # Currency converter command | commands.currency_converter(amount, from_currency, to_currency) | Converts currency using the CurrencyConverter library
 def currency_converter(amount, from_currency, to_currency):
+    if amount == "" or amount.isspace() or from_currency == "" or from_currency.isspace() or to_currency == "" or to_currency.isspace():
+        print(Fore.RED + "Converts currency\nUsage: convert <amount> <from_currency> <to_currency>")
+        return
+
     try:
         c = CurrencyConverter()
         from_currency = from_currency.upper()
@@ -523,6 +589,10 @@ def notes_view():
 
 # Notes add command | commands.notes_add(note) | Adds a note to the notes file
 def notes_add(note):
+    if note == "" or note.isspace():
+        print(Fore.RED + "Adds a note to the notes file\nUsage: notes add <note>")
+        return
+
     if note == "" or note.isspace():
         print(Fore.RED + "Error: Note cannot be empty.\nUsage: notes add <note>")
         return
